@@ -4,7 +4,7 @@ Site institucional bilíngue de aplicativos para Radiologia.
 
 - Produção: https://radapps.app
 - Repositório: https://github.com/alvaroajm/RadApps
-- Hospedagem: GitHub Pages, branch `main`, raiz; domínio e DNS na Cloudflare.
+- Hospedagem: GitHub Pages, branch `main`, raiz; domínio, DNS e proxy de segurança na Cloudflare.
 - Referência visual: https://alvaro-menezes.com — fonte conferida no commit `437f07b5947f628b07af61ae7f11d0812a357688` em 17/09/2026.
 
 ## Desenvolvimento
@@ -30,6 +30,22 @@ As fontes Inter e Playfair Display são servidas localmente; licenças em `asset
 ## Publicação
 
 Confirme o remoto `alvaroajm/RadApps`, `CNAME=radapps.app` e a zona `radapps.app` antes de qualquer alteração. Gere, valide, faça commit e push para `main`. Confira a implantação de Pages e as respostas HTTPS no domínio, incluindo os hashes dos ativos.
+
+## Segurança e busca
+
+Configuração aplicada e verificada em 17/09/2026:
+
+- `radapps.app` e `www.radapps.app`: CNAME com proxy para `alvaroajm.github.io`.
+- Cloudflare SSL Full (strict), redirecionamento HTTP → HTTPS, TLS mínimo 1.2 e TLS 1.3 ativo. Certificados universais ativos; HTTPS também exigido no GitHub Pages.
+- DNSSEC ativo, registro DS publicado automaticamente pelo Cloudflare Registrar; resposta autenticada confirmada no resolvedor do Google.
+- Proteção gerenciada gratuita da Cloudflare ativa. Bot Fight e Under Attack não foram habilitados.
+- Regra de resposta `RadApps - security response headers`, restrita a estes dois hosts: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`, `Content-Security-Policy: frame-ancestors 'none'; upgrade-insecure-requests` e `Strict-Transport-Security: max-age=15552000`. A CSP HTTP complementa a CSP mais restritiva do HTML, cujo hash JSON-LD é calculado pelo gerador.
+- Search Console: propriedade de domínio `radapps.app` verificada por TXT. Preservar esse registro DNS. Sitemap processado pelo Google, com 12 páginas encontradas; indexação solicitada e aceita para `/` e `/en/`. Isso não confirma inclusão no índice nem garante posição nos resultados.
+- Metadados PT/EN, dados estruturados de organização/site/página/catálogo e alternâncias de idioma no sitemap. A página 404 retorna status 404 e `noindex`.
+
+Validação: 12 páginas públicas com HTTP 200, cabeçalhos e JSON-LD corretos; robots e sitemap acessíveis; HTTP e www redirecionam corretamente; TLS 1.1 recusado e TLS 1.2 aceito; navegação PT/EN sem erros de console.
+
+As configurações da Cloudflare e o Search Console são externos ao repositório. Após troca de hospedagem, conferir certificado válido na origem, SSL estrito e redirecionamentos antes de alterar DNS. Não remover o certificado da origem: o proxy o valida. O HSTS exige que HTTPS continue disponível pelo prazo anunciado.
 
 ## Documentos institucionais
 
