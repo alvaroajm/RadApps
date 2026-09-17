@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://radapps.app/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/termos/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/terms/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/privacidade/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/privacy/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/cookies/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/cookies/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/aviso-medico/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/medical-disclaimer/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/acessibilidade/</loc><lastmod>2026-09-17</lastmod></url>
-  <url><loc>https://radapps.app/en/accessibility/</loc><lastmod>2026-09-17</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://radapps.app/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/"/></url>
+  <url><loc>https://radapps.app/en/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/"/></url>
+  <url><loc>https://radapps.app/termos/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/termos/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/terms/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/termos/"/></url>
+  <url><loc>https://radapps.app/en/terms/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/termos/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/terms/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/termos/"/></url>
+  <url><loc>https://radapps.app/privacidade/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/privacidade/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/privacy/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/privacidade/"/></url>
+  <url><loc>https://radapps.app/en/privacy/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/privacidade/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/privacy/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/privacidade/"/></url>
+  <url><loc>https://radapps.app/cookies/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/cookies/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/cookies/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/cookies/"/></url>
+  <url><loc>https://radapps.app/en/cookies/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/cookies/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/cookies/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/cookies/"/></url>
+  <url><loc>https://radapps.app/aviso-medico/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/aviso-medico/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/medical-disclaimer/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/aviso-medico/"/></url>
+  <url><loc>https://radapps.app/en/medical-disclaimer/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/aviso-medico/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/medical-disclaimer/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/aviso-medico/"/></url>
+  <url><loc>https://radapps.app/acessibilidade/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/acessibilidade/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/accessibility/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/acessibilidade/"/></url>
+  <url><loc>https://radapps.app/en/accessibility/</loc><lastmod>2026-09-17</lastmod><xhtml:link rel="alternate" hreflang="pt-BR" href="https://radapps.app/acessibilidade/"/><xhtml:link rel="alternate" hreflang="en" href="https://radapps.app/en/accessibility/"/><xhtml:link rel="alternate" hreflang="x-default" href="https://radapps.app/acessibilidade/"/></url>
 </urlset>

@@ -11,7 +11,7 @@ DOMAIN = 'https://radapps.app'
 DATE = '2026-09-17'
 EMAIL = 'admin@alvaro-menezes.com'
 PAGES = {
-    'home': ('', '', 'RadApps — Aplicativos para Radiologia', 'RadApps — Apps for Radiologists'),
+    'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
     'terms': ('termos/', 'terms/', 'Termos de uso', 'Terms of use'),
     'privacy': ('privacidade/', 'privacy/', 'Política de privacidade', 'Privacy policy'),
     'cookies': ('cookies/', 'cookies/', 'Cookies e preferências', 'Cookies and preferences'),
@@ -40,28 +40,52 @@ def svg(kind):
         'moon': '<path d="M20.5 13.2A9 9 0 0 1 10.8 3.5 9 9 0 1 0 20.5 13.2Z"/>',
     }
     return f'<svg class="{kind}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{paths[kind]}</svg>'
-def shell(page, lang, content, description=None):
+def shell(page, lang, content, description=None, not_found=False):
     t = lambda pt,en: en if lang else pt
     home = url('home', lang)
     langcode = 'en' if lang else 'pt-BR'
     page_title = title(page,lang) + ('' if page == 'home' else ' | RadApps')
-    description = description or t('Aplicativos para radiologistas. Conheça a RadApps, uma iniciativa de desenvolvimento para iOS, Android e web, criada pelo Dr. Álvaro Menezes.','Apps for radiologists. Meet RadApps, an iOS, Android and web development initiative created by Dr. Álvaro Menezes.')
+    if not_found:
+        page_title = 'Página não encontrada | RadApps'
+    description = description or t('Aplicativos e calculadoras para radiologia: TI-RADS, O-RADS, GFR, HepFe e N-Lung. Conheça a RadApps, iniciativa do radiologista Dr. Álvaro Menezes.','Radiology apps and medical calculators: TI-RADS, O-RADS, GFR, HepFe and N-Lung. Discover RadApps, created by radiologist Dr. Álvaro Menezes.')
     links = [('sobre',t('Sobre','About')),('aplicativos',t('Aplicativos','Apps')),('plataformas',t('Plataformas','Platforms')),('duvidas',t('Dúvidas','FAQ')),('contato',t('Contato','Contact'))]
     nav = ''.join(f'<li><a {"class=nav-contact" if key=="contato" else ""} href="{home}#{key}">{label}</a></li>' for key,label in links)
     legal_links = ''.join(f'<a href="{url(key,lang)}">{title(key,lang)}</a>' for key in PAGES if key != 'home')
-    schema = { '@context':'https://schema.org', '@type':'WebSite', 'name':'RadApps', 'url':DOMAIN, 'inLanguage':['pt-BR','en'], 'description':description, 'creator':{'@type':'Person','name':'Álvaro Menezes','url':'https://alvaro-menezes.com/'} }
+    page_url = DOMAIN + ('/404.html' if not_found else url(page,lang))
+    schema = {'@context':'https://schema.org', '@graph':[
+        {'@type':'Organization', '@id':DOMAIN+'/#organization', 'name':'RadApps', 'url':DOMAIN+'/',
+         'logo':DOMAIN+'/assets/brand/radapps-logo.jpg', 'email':EMAIL,
+         'description':t('Iniciativa independente de desenvolvimento de aplicativos para radiologia.','Independent radiology application development initiative.'),
+         'founder':{'@id':'https://alvaro-menezes.com/#person'}},
+        {'@type':'Person', '@id':'https://alvaro-menezes.com/#person', 'name':'Álvaro Menezes', 'url':'https://alvaro-menezes.com/'},
+        {'@type':'WebSite', '@id':DOMAIN+'/#website', 'name':'RadApps', 'url':DOMAIN+'/',
+         'inLanguage':['pt-BR','en'], 'publisher':{'@id':DOMAIN+'/#organization'}},
+        {'@type':'WebPage', '@id':page_url+'#webpage', 'url':page_url, 'name':page_title,
+         'description':description, 'inLanguage':langcode, 'isPartOf':{'@id':DOMAIN+'/#website'}},
+    ]}
+    if page == 'home' and not not_found:
+        schema['@graph'][-1]['mainEntity'] = {'@id':page_url+'#apps'}
+        schema['@graph'].append({'@type':'ItemList', '@id':page_url+'#apps',
+            'name':t('Aplicativos para o Radiologista','Apps for the Radiologist'),
+            'numberOfItems':len(APPS), 'itemListElement':[
+                {'@type':'ListItem', 'position':i, 'item':{'@type':'WebPage',
+                 'name':name, 'description':en if lang else pt,
+                 'url':f'https://alvaro-menezes.com/apps/{slug}.html'}}
+                for i,(slug,name,pt,en) in enumerate(APPS,1)]})
     schema_text = json.dumps(schema,ensure_ascii=False)
     schema_hash = b64encode(sha256(schema_text.encode()).digest()).decode()
     return f'''<!doctype html>
 <html lang="{langcode}"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(page_title)}</title><meta name="description" content="{escape(description)}">
+<meta name="robots" content="{'noindex, follow' if not_found else 'index, follow, max-image-preview:large'}">
 <meta name="author" content="RadApps · Álvaro Menezes"><meta name="theme-color" content="#0a2540">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-{schema_hash}'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
-<link rel="canonical" href="{DOMAIN}{url(page,lang)}">
+<link rel="canonical" href="{page_url}">
 <link rel="alternate" hreflang="pt-BR" href="{DOMAIN}{url(page,0)}"><link rel="alternate" hreflang="en" href="{DOMAIN}{url(page,1)}"><link rel="alternate" hreflang="x-default" href="{DOMAIN}{url(page,0)}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="RadApps"><meta property="og:title" content="{escape(page_title)}"><meta property="og:description" content="{escape(description)}"><meta property="og:url" content="{DOMAIN}{url(page,lang)}"><meta property="og:locale" content="{'en_US' if lang else 'pt_BR'}"><meta property="og:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta property="og:image:width" content="1792"><meta property="og:image:height" content="1008"><meta property="og:image:alt" content="RadApps — Apps for radiologists. Built for precision."><meta name="twitter:card" content="summary_large_image">
+<meta property="og:locale:alternate" content="{'pt_BR' if lang else 'en_US'}"><meta name="twitter:title" content="{escape(page_title)}"><meta name="twitter:description" content="{escape(description)}"><meta name="twitter:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta name="twitter:image:alt" content="RadApps — Apps for radiologists. Built for precision.">
 <link rel="icon" type="image/jpeg" href="/assets/brand/radapps-logo.jpg"><link rel="apple-touch-icon" href="/assets/brand/radapps-logo.jpg">
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script src="{asset('theme-init.js')}"></script><link rel="stylesheet" href="{asset('site.css')}">
@@ -131,7 +155,7 @@ def legal_content(page,lang):
             (t('1. Quem é o responsável','1. Who is responsible'),t(f'Álvaro Menezes é o responsável pelo site da iniciativa RadApps e pelo tratamento de dados realizado diretamente por ela. Para assuntos de privacidade e exercício de direitos, escreva para {mail}. Base de atuação: Fortaleza, Ceará, Brasil.',f'Álvaro Menezes operates the RadApps initiative’s website and is responsible for personal data processing carried out directly by it. For privacy questions and rights requests, email {mail}. Based in Fortaleza, Ceará, Brazil.')),
             (t('2. Informações tratadas','2. Information processed'),t('<ul><li><strong>Navegação:</strong> serviços de hospedagem e infraestrutura podem processar endereço IP, data e hora, página solicitada, dados do navegador e registros de falhas ou segurança para entregar e proteger o site.</li><li><strong>Preferência visual:</strong> a escolha de tema claro ou escuro é guardada no armazenamento local do navegador. O idioma é definido pela URL visitada.</li><li><strong>Contato voluntário:</strong> ao enviar um e-mail, você compartilha seu endereço, nome, conteúdo e eventuais anexos com o responsável e com os provedores de e-mail envolvidos.</li></ul><p>O código do site não inclui publicidade, pixels de marketing, ferramentas de análise de audiência, geolocalização, formulários ou uploads. As fontes e imagens são servidas pelo próprio site. Não solicitamos dados de saúde ou de pacientes.</p>','<ul><li><strong>Browsing:</strong> hosting and infrastructure providers may process IP addresses, timestamps, requested pages, browser information and error or security logs to deliver and protect this website.</li><li><strong>Appearance preference:</strong> your light or dark theme choice is stored locally in your browser. Language is determined by the URL you visit.</li><li><strong>Voluntary contact:</strong> sending an email shares your address, name, message and any attachments with the operator and the email providers involved.</li></ul><p>The site’s code includes no advertising, marketing pixels, audience analytics, geolocation, forms or uploads. Fonts and images are served by this site. We do not request health or patient data.</p>')),
             (t('3. Finalidades e bases legais','3. Purposes and legal bases'),t('Dados técnicos são tratados para entrega do conteúdo, prevenção de abuso e manutenção da segurança, com fundamento no legítimo interesse, quando aplicável e respeitados os direitos do titular. Comunicações são tratadas para responder à solicitação e, conforme o caso, para procedimentos preliminares solicitados pelo titular ou cumprimento de obrigação legal. A preferência visual serve somente à personalização solicitada. Não utilizamos o contato para campanhas de marketing não solicitadas.','Technical data is processed to deliver content, prevent abuse and maintain security, on the basis of legitimate interests where applicable and subject to data subjects’ rights. Communications are processed to respond to requests and, as appropriate, take requested pre-contractual steps or meet legal obligations. The appearance preference serves only the requested personalisation. We do not use contact information for unsolicited marketing campaigns.')),
-            (t('4. Infraestrutura e compartilhamento','4. Infrastructure and sharing'),t('O site é hospedado no GitHub Pages; o domínio e o DNS são gerenciados pela Cloudflare. Esses fornecedores podem tratar dados técnicos conforme suas funções e políticas. O envio de e-mail envolve o provedor de e-mail escolhido pelo visitante e o do destinatário. Dados também podem ser fornecidos quando houver obrigação legal ou ordem válida. A RadApps não vende dados pessoais.','This site is hosted on GitHub Pages; its domain and DNS are managed by Cloudflare. These providers may process technical data according to their roles and policies. Email involves both the visitor’s chosen email provider and the recipient’s provider. Data may also be disclosed to meet a legal obligation or valid order. RadApps does not sell personal data.') + ' <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement ↗</a> · <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy ↗</a>'),
+            (t('4. Infraestrutura e compartilhamento','4. Infrastructure and sharing'),t('O site é hospedado no GitHub Pages; o domínio, o DNS, a distribuição de conteúdo (CDN) e a proteção do tráfego são gerenciados pela Cloudflare. Esses fornecedores podem tratar dados técnicos conforme suas funções e políticas. O envio de e-mail envolve o provedor de e-mail escolhido pelo visitante e o do destinatário. Dados também podem ser fornecidos quando houver obrigação legal ou ordem válida. A RadApps não vende dados pessoais.','This site is hosted on GitHub Pages; its domain, DNS, content delivery (CDN) and traffic protection are managed by Cloudflare. These providers may process technical data according to their roles and policies. Email involves both the visitor’s chosen email provider and the recipient’s provider. Data may also be disclosed to meet a legal obligation or valid order. RadApps does not sell personal data.') + ' <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement ↗</a> · <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare Privacy Policy ↗</a>'),
             (t('5. Transferências internacionais','5. International transfers'),t('A infraestrutura de fornecedores globais pode envolver tratamento de dados fora do Brasil. Essas operações se sujeitam às regras aplicáveis de proteção de dados e aos mecanismos de transferência previstos nos instrumentos e nas políticas dos fornecedores. Informações sobre os fornecedores e as operações relacionadas ao site podem ser solicitadas pelo canal de privacidade.','Global providers’ infrastructure may involve processing outside Brazil. Such operations are subject to applicable data protection rules and the transfer mechanisms described in providers’ agreements and policies. Information about providers and website-related processing may be requested through the privacy contact.')),
             (t('6. Conservação e segurança','6. Retention and security'),t('A preferência de tema permanece no dispositivo até ser removida pelo usuário. E-mails são mantidos pelo tempo necessário ao atendimento da solicitação e à eventual proteção de direitos ou cumprimento de obrigação legal; a necessidade de conservação é reavaliada após o encerramento do assunto. Registros de infraestrutura seguem as regras de retenção dos respectivos fornecedores. Utilizamos HTTPS e limitamos o site a funções institucionais. Nenhuma transmissão ou sistema oferece segurança absoluta.','The theme preference remains on the device until you remove it. Emails are retained as needed to address the request and, where necessary, protect rights or meet legal obligations; continued retention is reassessed after the matter is closed. Infrastructure logs follow the respective providers’ retention rules. We use HTTPS and restrict the website to informational functions. No transmission or system can provide absolute security.')),
             (t('7. Seus direitos','7. Your rights'),t(f'Nos termos da legislação aplicável, você pode solicitar confirmação e acesso, correção, informações sobre compartilhamento e, quando cabível, anonimização, bloqueio, eliminação, portabilidade, oposição ao tratamento e revogação de consentimento. Envie a solicitação para {mail}. Poderemos pedir apenas os dados necessários para confirmar a identidade e atender com segurança, nos prazos legais aplicáveis. Você também pode apresentar petição à Autoridade Nacional de Proteção de Dados (ANPD).',f'Under applicable law, you may request confirmation and access, correction, information about sharing and, where applicable, anonymisation, restriction, erasure, portability, objection and withdrawal of consent. Send requests to {mail}. We may request only the information necessary to verify identity and respond securely, within applicable statutory time limits. You may also submit a petition to Brazil’s National Data Protection Authority (ANPD).')),
@@ -188,9 +212,14 @@ def main():
             path.parent.mkdir(parents=True,exist_ok=True)
             path.write_text(homepage(lang) if page=='home' else legal_page(page,lang))
     missing = '<section class="container not-found"><p class="eyebrow">404</p><h1>Página não encontrada.<br><em>Page not found.</em></h1><p>O endereço pode ter mudado. / The address may have changed.</p><a class="btn" href="/">Voltar à RadApps / Back to RadApps ↗</a></section>'
-    (ROOT/'404.html').write_text(shell('home',0,missing).replace('<title>RadApps — Aplicativos para Radiologia</title>','<title>Página não encontrada | RadApps</title><meta name="robots" content="noindex">'))
+    (ROOT/'404.html').write_text(shell('home',0,missing,not_found=True))
     locations = [DOMAIN + url(page,lang) for page in PAGES for lang in (0,1)]
-    (ROOT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+'\n'.join(f'  <url><loc>{loc}</loc><lastmod>{DATE}</lastmod></url>' for loc in locations)+'\n</urlset>\n')
+    entries = []
+    for page in PAGES:
+        alternates = ''.join(f'<xhtml:link rel="alternate" hreflang="{code}" href="{DOMAIN}{url(page,lang)}"/>' for code,lang in [('pt-BR',0),('en',1),('x-default',0)])
+        for lang in (0,1):
+            entries.append(f'  <url><loc>{DOMAIN}{url(page,lang)}</loc><lastmod>{DATE}</lastmod>{alternates}</url>')
+    (ROOT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'+'\n'.join(entries)+'\n</urlset>\n')
     (ROOT/'robots.txt').write_text(f'User-agent: *\nAllow: /\nDisallow: /scripts/\nDisallow: /docs/\nSitemap: {DOMAIN}/sitemap.xml\n')
     print(f'Built {len(locations)} pages + 404. Assets versioned with SHA-256.')
 
