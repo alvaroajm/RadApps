@@ -9,6 +9,7 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://radapps.app'
 DATE = '2026-09-17'
+PAGE_MODIFIED = {'home': '2026-09-18'}
 EMAIL = 'admin@alvaro-menezes.com'
 PAGES = {
     'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
@@ -19,12 +20,41 @@ PAGES = {
     'accessibility': ('acessibilidade/', 'accessibility/', 'Acessibilidade', 'Accessibility'),
 }
 APPS = [
-    ('gfr','GFR','Taxa de Filtração Glomerular CKD-EPI (2021)','Glomerular Filtration Rate — CKD-EPI (2021)'),
+    ('gfr','GFR','Filtração glomerular: CKD-EPI, CKiD U25 e Schwartz','Glomerular filtration: CKD-EPI, CKiD U25 and Schwartz'),
     ('tirads','TI-RADS','Calcula o TI-RADS na Ultrassonografia da Tireoide','Calculates TI-RADS on thyroid ultrasound'),
     ('hepfe','HepFe*','Quantificação do ferro hepático por RM','Liver iron quantification by MRI'),
     ('orads','O-RADS Calc','Classificação de lesões anexiais em US e RM','Adnexal lesions on ultrasound and MRI'),
     ('nlung','N-Lung Calc','Recomendações Fleischner e Lung-RADS','Fleischner and Lung-RADS recommendations'),
 ]
+APP_GUIDES = {
+    'gfr': (
+        'GFR: cálculo da função renal', 'GFR: kidney function calculator',
+        'Estima a taxa de filtração glomerular a partir da creatinina e dos dados exigidos pela equação. Reúne CKD-EPI 2021, CKiD U25 e Schwartz, com escolha do método conforme a faixa etária. As referências e limitações de cada estimativa estão disponíveis no aplicativo.',
+        'Estimates glomerular filtration rate from creatinine and the inputs required by each equation. Includes CKD-EPI 2021, CKiD U25 and Schwartz, with method selection according to age. References and limitations for each estimate are available in the app.'),
+    'tirads': (
+        'TI-RADS: nódulos da tireoide', 'TI-RADS: thyroid nodules',
+        'Organiza os achados dos nódulos tireoidianos na ultrassonografia segundo o ACR TI-RADS. Permite revisar pontuação, categoria e orientações relacionadas às medidas e ao contexto informado, além de preparar uma descrição para revisão profissional.',
+        'Organises thyroid nodule ultrasound findings using ACR TI-RADS. Review the score, category and guidance related to the measurements and context entered, and prepare a description for professional review.'),
+    'hepfe': (
+        'HepFe: ferro hepático por ressonância', 'HepFe: liver iron by MRI',
+        'Analisa o decaimento do sinal em medidas de ressonância magnética para estimar ferro hepático. Oferece ajuste da curva, escolha de calibração e exportação de gráfico e texto para revisão. A interpretação depende da aquisição, do modelo utilizado e de suas limitações.',
+        'Analyses signal decay in MRI measurements to estimate liver iron. Provides curve fitting, calibration selection and export of a plot and text for review. Interpretation depends on the acquisition, the chosen model and its limitations.'),
+    'orads': (
+        'O-RADS: lesões ovarianas e anexiais', 'O-RADS: ovarian and adnexal lesions',
+        'Auxilia a organizar os descritores de uma lesão anexial em ultrassonografia ou ressonância magnética segundo o ACR O-RADS. O aplicativo apresenta categoria, referências e texto de laudo para revisão, respeitando a modalidade e o contexto de aplicação.',
+        'Helps organise descriptors for an adnexal lesion on ultrasound or MRI using ACR O-RADS. The app presents the category, references and draft report text for review, with attention to the imaging modality and applicable clinical context.'),
+    'nlung': (
+        'N-Lung: nódulos pulmonares na tomografia', 'N-Lung: pulmonary nodules on CT',
+        'Separa a avaliação de nódulos incidentais pelas recomendações Fleischner da avaliação de rastreamento pelo Lung-RADS. Reúne medidas, comparação entre exames e texto de laudo para revisão. Confira os critérios de aplicabilidade antes de usar cada sistema.',
+        'Separates incidental nodule assessment using Fleischner recommendations from screening assessment using Lung-RADS. Brings together measurements, examination comparison and draft report text for review. Check the eligibility criteria before using each system.'),
+}
+LEGAL_DESCRIPTIONS = {
+    'terms': ('Termos de uso do site RadApps: finalidade, acesso, aplicativos vinculados, propriedade intelectual e contato do responsável.', 'RadApps website terms: purpose, access, linked applications, intellectual property and operator contact details.'),
+    'privacy': ('Privacidade na RadApps: dados de navegação, Cloudflare Web Analytics, armazenamento local, contato e direitos dos titulares.', 'Privacy at RadApps: browsing data, Cloudflare Web Analytics, local storage, contact details and data subject rights.'),
+    'cookies': ('Cookies e preferências da RadApps: armazenamento do tema, medição de visitas, infraestrutura e como redefinir suas preferências.', 'RadApps cookies and preferences: theme storage, visitor measurement, infrastructure and how to reset your preferences.'),
+    'medical': ('Aviso médico da RadApps: público profissional, limites das calculadoras, revisão dos resultados e uso responsável das ferramentas.', 'RadApps medical disclaimer: professional audience, calculator limitations, result review and responsible use of the tools.'),
+    'accessibility': ('Acessibilidade na RadApps: navegação por teclado, leitura, contraste, preferências visuais e canal para comunicar dificuldades.', 'Accessibility at RadApps: keyboard navigation, readability, contrast, display preferences and how to report access difficulties.'),
+}
 def asset(path):
     return '/assets/' + path + '?v=' + sha256((ROOT/'assets'/path).read_bytes()).hexdigest()[:12]
 def url(page, lang):
@@ -52,6 +82,9 @@ def shell(page, lang, content, description=None, not_found=False):
     nav = ''.join(f'<li><a {"class=nav-contact" if key=="contato" else ""} href="{home}#{key}">{label}</a></li>' for key,label in links)
     legal_links = ''.join(f'<a href="{url(key,lang)}">{title(key,lang)}</a>' for key in PAGES if key != 'home')
     page_url = DOMAIN + ('/404.html' if not_found else url(page,lang))
+    alternates = '' if not_found else ''.join(
+        f'<link rel="alternate" hreflang="{code}" href="{DOMAIN}{url(page,language)}">'
+        for code,language in [('pt-BR',0),('en',1),('x-default',0)])
     schema = {'@context':'https://schema.org', '@graph':[
         {'@type':'Organization', '@id':DOMAIN+'/#organization', 'name':'RadApps', 'url':DOMAIN+'/',
          'logo':DOMAIN+'/assets/brand/radapps-logo.jpg', 'email':EMAIL,
@@ -72,6 +105,13 @@ def shell(page, lang, content, description=None, not_found=False):
                  'name':name, 'description':en if lang else pt,
                  'url':f'https://alvaro-menezes.com/apps/{slug}.html'}}
                 for i,(slug,name,pt,en) in enumerate(APPS,1)]})
+    elif not not_found:
+        schema['@graph'][-1]['breadcrumb'] = {'@id':page_url+'#breadcrumb'}
+        schema['@graph'].append({'@type':'BreadcrumbList', '@id':page_url+'#breadcrumb',
+            'itemListElement':[
+                {'@type':'ListItem', 'position':1, 'name':'RadApps', 'item':DOMAIN+home},
+                {'@type':'ListItem', 'position':2, 'name':title(page,lang), 'item':page_url},
+            ]})
     schema_text = json.dumps(schema,ensure_ascii=False)
     schema_hash = b64encode(sha256(schema_text.encode()).digest()).decode()
     return f'''<!doctype html>
@@ -83,8 +123,8 @@ def shell(page, lang, content, description=None, not_found=False):
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-{schema_hash}' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="canonical" href="{page_url}">
-<link rel="alternate" hreflang="pt-BR" href="{DOMAIN}{url(page,0)}"><link rel="alternate" hreflang="en" href="{DOMAIN}{url(page,1)}"><link rel="alternate" hreflang="x-default" href="{DOMAIN}{url(page,0)}">
-<meta property="og:type" content="website"><meta property="og:site_name" content="RadApps"><meta property="og:title" content="{escape(page_title)}"><meta property="og:description" content="{escape(description)}"><meta property="og:url" content="{DOMAIN}{url(page,lang)}"><meta property="og:locale" content="{'en_US' if lang else 'pt_BR'}"><meta property="og:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta property="og:image:width" content="1792"><meta property="og:image:height" content="1008"><meta property="og:image:alt" content="RadApps — Apps for radiologists. Built for precision."><meta name="twitter:card" content="summary_large_image">
+{alternates}
+<meta property="og:type" content="website"><meta property="og:site_name" content="RadApps"><meta property="og:title" content="{escape(page_title)}"><meta property="og:description" content="{escape(description)}"><meta property="og:url" content="{page_url}"><meta property="og:locale" content="{'en_US' if lang else 'pt_BR'}"><meta property="og:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta property="og:image:width" content="1792"><meta property="og:image:height" content="1008"><meta property="og:image:alt" content="RadApps — Apps for radiologists. Built for precision."><meta name="twitter:card" content="summary_large_image">
 <meta property="og:locale:alternate" content="{'pt_BR' if lang else 'en_US'}"><meta name="twitter:title" content="{escape(page_title)}"><meta name="twitter:description" content="{escape(description)}"><meta name="twitter:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta name="twitter:image:alt" content="RadApps — Apps for radiologists. Built for precision.">
 <link rel="icon" type="image/jpeg" href="/assets/brand/radapps-logo.jpg"><link rel="apple-touch-icon" href="/assets/brand/radapps-logo.jpg">
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -102,6 +142,12 @@ def shell(page, lang, content, description=None, not_found=False):
 def homepage(lang):
     t = lambda pt,en: en if lang else pt
     apps = ''.join(f'''<a class="app-tile" href="https://alvaro-menezes.com/apps/{slug}.html" target="_blank" rel="noopener noreferrer"><span class="app-icon"><img src="{asset(f'apps/{slug}-icon.jpg')}" alt="{escape(name)}" width="88" height="88" loading="lazy"></span><span class="app-name">{escape(name)}</span><span class="app-desc">{escape(en if lang else pt)}</span></a>''' for slug,name,pt,en in APPS)
+    guides = ''.join(
+        f'<article class="app-guide"><h3>{escape(APP_GUIDES[slug][lang])}</h3>'
+        f'<p>{escape(APP_GUIDES[slug][lang+2])}</p>'
+        f'<a class="text-link" href="https://alvaro-menezes.com/apps/{slug}.html" target="_blank" rel="noopener noreferrer">'
+        f'{t("Abrir", "Open")} {escape(name)} <span aria-hidden="true">↗</span></a></article>'
+        for slug,name,pt,en in APPS)
     pillars = [
         ('01',t('A prática como ponto de partida','Built around real practice'),t('A experiência do radiologista orienta a escolha dos problemas, a organização das informações e o desenho de cada ferramenta.','Radiology experience guides the problems we address, the information we organise and the design of each tool.')),
         ('02',t('Clareza em cada interação','Clarity in every interaction'),t('Interfaces objetivas para consultar critérios e organizar cálculos, com atenção à leitura, à navegação e ao uso em diferentes telas.','Focused interfaces for consulting criteria and organising calculations, with attention to readability, navigation and different screen sizes.')),
@@ -123,9 +169,9 @@ def homepage(lang):
     ]
     faq_html = ''.join(f'<details class="faq-item"><summary>{q}</summary><p>{a}</p></details>' for q,a in faqs)
     content = f'''
-<section class="hero" id="inicio"><div class="container hero-inner"><div class="hero-copy"><p class="eyebrow">{t('Desenvolvimento de aplicativos médicos','Medical application development')}</p><h1>{t('Tecnologia para<br>a radiologia.','Technology<br>for radiology.')}<span><em>{t('Precisão em cada detalhe.','Precision in every detail.')}</em></span></h1><p>{t('Criamos ferramentas digitais que aproximam o conhecimento médico da prática. Uma iniciativa de desenvolvimento para iOS, Android e web, com a experiência de quem vive a radiologia.','We create digital tools that bring medical knowledge closer to everyday practice. An iOS, Android and web development initiative shaped by first-hand experience in radiology.')}</p><div class="hero-actions"><a class="btn" href="#aplicativos">{t('Conheça os aplicativos','Explore the apps')} <span aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="#sobre">{t('Sobre a RadApps','About RadApps')} <span aria-hidden="true">↓</span></a></div></div><figure class="hero-art"><img src="/assets/brand/radapps-logo.jpg" alt="RadApps — Apps for radiologists. Built for precision." width="1408" height="1408" fetchpriority="high"><figcaption>{t('Da experiência médica à tecnologia','From medical experience to technology')}</figcaption></figure></div></section>
+<section class="hero" id="inicio"><div class="container hero-inner"><div class="hero-copy"><p class="eyebrow">{t('Desenvolvimento de aplicativos médicos','Medical application development')}</p><h1>{t('Aplicativos e<br>calculadoras.','Radiology apps<br>and calculators.')}<span><em>{t('Para a radiologia.','Built for daily practice.')}</em></span></h1><p>{t('TI-RADS para tireoide, O-RADS para lesões anexiais, GFR para função renal, HepFe para ferro hepático e N-Lung para nódulos pulmonares. Ferramentas web desenvolvidas pelo radiologista Dr. Álvaro Menezes.','TI-RADS for thyroid nodules, O-RADS for adnexal lesions, GFR for kidney function, HepFe for liver iron and N-Lung for pulmonary nodules. Web tools developed by radiologist Dr. Álvaro Menezes.')}</p><div class="hero-actions"><a class="btn" href="#aplicativos">{t('Conheça os aplicativos','Explore the apps')} <span aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="#sobre">{t('Sobre a RadApps','About RadApps')} <span aria-hidden="true">↓</span></a></div></div><figure class="hero-art"><img src="/assets/brand/radapps-logo.jpg" alt="RadApps — Apps for radiologists. Built for precision." width="1408" height="1408" fetchpriority="high"><figcaption>{t('Da experiência médica à tecnologia','From medical experience to technology')}</figcaption></figure></div></section>
 <div class="platform-strip"><div class="container"><span class="platform-label">{t('Um ecossistema. Diferentes possibilidades.','One ecosystem. Different possibilities.')}</span><div class="platform-names"><span>{svg('phone')} iOS</span><span>{svg('android')} Android</span><span>{svg('web')} Web</span></div></div></div>
-<section class="section section-alt" id="aplicativos"><div class="container"><div class="section-header"><p class="eyebrow">{t('Ferramentas','Tools')}</p><h2>{t('Aplicativos para o Radiologista','Apps for the Radiologist')}</h2><p class="section-sub">{t('Calculadoras e ferramentas rápidas do dia a dia do laudo, rodando direto no navegador — sem precisar instalar nada.','Small calculators and tools for daily reporting, running right in the browser — no install required.')}</p></div><div class="apps-panel"><div class="apps-grid">{apps}</div></div><p class="app-note">{t('Os aplicativos abrem em alvaro-menezes.com, em uma nova aba.','Apps open on alvaro-menezes.com in a new tab.')} <a href="{url('medical',lang)}">{t('Orientações de uso','Usage guidance')} ↗</a></p></div></section>
+<section class="section section-alt" id="aplicativos"><div class="container"><div class="section-header"><p class="eyebrow">{t('Ferramentas','Tools')}</p><h2>{t('Calculadoras para a prática radiológica','Calculators for radiology practice')}</h2><p class="section-sub">{t('Calculadoras e ferramentas rápidas do dia a dia do laudo, rodando direto no navegador — sem precisar instalar nada.','Small calculators and tools for daily reporting, running right in the browser — no install required.')}</p></div><div class="apps-panel"><div class="apps-grid">{apps}</div></div><p class="app-note">{t('Os aplicativos abrem em alvaro-menezes.com, em uma nova aba.','Apps open on alvaro-menezes.com in a new tab.')} <a href="{url('medical',lang)}">{t('Orientações de uso','Usage guidance')} ↗</a></p><div class="app-guides">{guides}</div></div></section>
 <section class="section" id="sobre"><div class="container"><div class="split-heading"><div><p class="eyebrow">{t('Sobre a RadApps','About RadApps')}</p><h2>{t('Conhecimento médico.<br><em>Experiência digital.</em>','Medical knowledge.<br><em>Digital experience.</em>')}</h2></div><p>{t('A RadApps nasce do encontro entre radiologia e desenvolvimento de software. Nosso propósito é transformar necessidades da prática em ferramentas claras, acessíveis e úteis.','RadApps brings together radiology and software development. Our purpose is to translate practical needs into clear, accessible and useful tools.')}</p></div><div class="about-grid"><figure class="banner-image"><img src="/assets/brand/radapps-banner.jpg" alt="RadApps — Apps for radiologists. Built for precision. iOS & Android. radapps.app" width="1792" height="1008" loading="lazy"></figure><div class="about-copy"><h3>{t('Criada por um radiologista.','Created by a radiologist.')}</h3><p>{t('Uma iniciativa do <strong>Dr. Álvaro Menezes</strong>, médico radiologista, Membro Titular do Colégio Brasileiro de Radiologia, com atuação em Radiologia Geral e Musculoesquelética.','An initiative by <strong>Dr. Álvaro Menezes</strong>, a radiologist and full member of the Brazilian College of Radiology, practising general and musculoskeletal radiology.')}</p><p>{t('Desenvolvimento independente, a partir de Fortaleza, Brasil, com uma linguagem visual e experiências pensadas para profissionais em diferentes lugares.','Independent development based in Fortaleza, Brazil, with a visual language and experiences designed for professionals across borders.')}</p><a class="text-link" href="https://alvaro-menezes.com/" target="_blank" rel="noopener noreferrer">{t('Conheça o fundador','Meet the founder')} <span aria-hidden="true">↗</span></a></div></div><div class="pillars">{pillars_html}</div></div></section>
 <section class="section section-alt" id="plataformas"><div class="container"><div class="section-header"><p class="eyebrow">{t('Desenvolvimento multiplataforma','Cross-platform development')}</p><h2>{t('A radiologia acompanha você.','Radiology, wherever you are.')}</h2><p class="section-sub">{t('Do computador à tela do celular, projetamos experiências para diferentes formas de trabalhar, consultar e aprender.','From desktop to mobile, we design experiences for different ways of working, consulting and learning.')}</p></div><div class="platform-grid">{platforms_html}</div></div></section>
 <section class="section" id="duvidas"><div class="container faq-grid"><div class="faq-heading"><p class="eyebrow">{t('Perguntas frequentes','Frequently asked questions')}</p><h2>{t('Antes de<br><em>começar.</em>','Before you<br><em>get started.</em>')}</h2><p>{t('O essencial sobre acesso, disponibilidade e uso responsável das ferramentas.','The essentials of access, availability and responsible use.')}</p></div><div>{faq_html}</div></div></section>
@@ -203,7 +249,7 @@ def legal_page(page,lang):
     t = lambda pt,en: en if lang else pt
     nav = ''.join(f'<a href="{url(key,lang)}" {"aria-current=page" if key==page else ""}>{title(key,lang)}</a>' for key in PAGES if key != 'home')
     content = f'''<header class="legal-hero"><div class="container"><p class="eyebrow">{t('Transparência e responsabilidade','Transparency and responsibility')}</p><h1>{title(page,lang)}</h1><p>{t('Atualizado em 17 de setembro de 2026','Last updated September 17, 2026')} · radapps.app</p></div></header><div class="container legal-layout"><nav class="legal-nav" aria-label="{t('Páginas legais','Legal pages')}">{nav}<a href="{url('home',lang)}">← {t('Voltar para a RadApps','Back to RadApps')}</a></nav><article class="prose">{legal_content(page,lang)}</article></div>'''
-    return shell(page,lang,content,f'{title(page,lang)} — RadApps. '+t('Informações sobre o site, contato e uso responsável.','Website information, contact and responsible use.'))
+    return shell(page,lang,content,LEGAL_DESCRIPTIONS[page][lang])
 
 def main():
     for lang in (0,1):
@@ -218,7 +264,7 @@ def main():
     for page in PAGES:
         alternates = ''.join(f'<xhtml:link rel="alternate" hreflang="{code}" href="{DOMAIN}{url(page,lang)}"/>' for code,lang in [('pt-BR',0),('en',1),('x-default',0)])
         for lang in (0,1):
-            entries.append(f'  <url><loc>{DOMAIN}{url(page,lang)}</loc><lastmod>{DATE}</lastmod>{alternates}</url>')
+            entries.append(f'  <url><loc>{DOMAIN}{url(page,lang)}</loc><lastmod>{PAGE_MODIFIED.get(page, DATE)}</lastmod>{alternates}</url>')
     (ROOT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'+'\n'.join(entries)+'\n</urlset>\n')
     (ROOT/'robots.txt').write_text(f'User-agent: *\nAllow: /\nDisallow: /scripts/\nDisallow: /docs/\nSitemap: {DOMAIN}/sitemap.xml\n')
     print(f'Built {len(locations)} pages + 404. Assets versioned with SHA-256.')

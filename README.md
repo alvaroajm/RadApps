@@ -49,6 +49,12 @@ Cloudflare Web Analytics está habilitado com injeção automática para `radapp
 
 As configurações da Cloudflare e o Search Console são externos ao repositório. Após troca de hospedagem, conferir certificado válido na origem, SSL estrito e redirecionamentos antes de alterar DNS. Não remover o certificado da origem: o proxy o valida. O HSTS exige que HTTPS continue disponível pelo prazo anunciado.
 
+Revisão de busca em 18/09/2026: a inspeção individual no Search Console confirmou que a homepage em português está indexada; o relatório agregado de indexação ainda estava em processamento. O sitemap estava processado, com 12 páginas encontradas. Isso não equivale a 12 páginas indexadas nem comprova posicionamento ou tráfego orgânico.
+
+A homepage descreve a finalidade dos cinco aplicativos em português e inglês, com links para suas páginas originais. As páginas institucionais têm metadescrições específicas e `BreadcrumbList`. A página 404 permanece `noindex` e não declara traduções da homepage. Atualize `PAGE_MODIFIED` no gerador quando o conteúdo da página correspondente mudar; não atualize datas apenas por executar o build.
+
+O cache da Cloudflare permite HTML das 12 páginas públicas sem parâmetros, cookies ou Authorization, respeitando o prazo da origem (600 segundos). CSS e JavaScript com `?v=` têm cache de um mês: manter os hashes atualizados é obrigatório. Após publicação, confira também as URLs sem parâmetros; um `?deploy=` verifica a origem, mas não comprova que o HTML comum saiu do cache.
+
 ## Documentos institucionais
 
 Termos de uso, privacidade, cookies e preferências, aviso médico e acessibilidade, nos dois idiomas. Eles descrevem este site institucional e não substituem a documentação de cada aplicativo. O responsável é identificado como Álvaro Menezes; não foi inventado CNPJ, razão social ou registro sanitário. O e-mail de contato é o já publicado na homepage pessoal.
