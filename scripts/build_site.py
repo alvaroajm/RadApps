@@ -9,7 +9,7 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://radapps.app'
 DATE = '2026-09-17'
-PAGE_MODIFIED = {'home': '2026-09-19'}
+PAGE_MODIFIED = {'home': '2026-09-20'}
 EMAIL = 'admin@alvaro-menezes.com'
 PAGES = {
     'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
@@ -20,7 +20,7 @@ PAGES = {
     'accessibility': ('acessibilidade/', 'accessibility/', 'Acessibilidade', 'Accessibility'),
 }
 APPS = [
-    ('puberty','Puberty Calc','US pélvica pediátrica: maturação puberal e laudo','Pediatric pelvic ultrasound: pubertal maturation and report (Portuguese)'),
+    ('puberty','Puberty Calc','US pélvica pediátrica: maturação puberal e laudo (PT/EN)','Pediatric pelvic ultrasound: pubertal maturation and report (PT/EN)'),
     ('gfr','GFR','Filtração glomerular: CKD-EPI, CKiD U25 e Schwartz','Glomerular filtration: CKD-EPI, CKiD U25 and Schwartz'),
     ('tirads','TI-RADS','Calcula o TI-RADS na Ultrassonografia da Tireoide','Calculates TI-RADS on thyroid ultrasound'),
     ('hepfe','HepFe*','Quantificação do ferro hepático por RM','Liver iron quantification by MRI'),
@@ -31,7 +31,7 @@ APP_GUIDES = {
     'puberty': (
         'Puberty Calc: ultrassonografia pélvica pediátrica', 'Puberty Calc: pediatric pelvic ultrasound',
         'Integra idade, história de menarca e medidas da pelve feminina por via transabdominal. Calcula volumes e relação fundo/colo, apresenta uma estimativa descritiva do padrão puberal e gera uma minuta de laudo com conclusão. Os critérios e limites são explicitados; a ferramenta não confirma puberdade precoce nem atribui estágio de Tanner.',
-        'Combines age, menarche history and transabdominal female pelvic measurements. Calculates volumes and the fundus-to-cervix ratio, offers a descriptive estimate of pubertal morphology and generates a draft report with a conclusion. Criteria and limitations are explicit; the tool does not diagnose precocious puberty or assign a Tanner stage. The app and report are in Portuguese.'),
+        'Combines age, menarche history and transabdominal female pelvic measurements. Calculates volumes and the fundus-to-cervix ratio, offers a descriptive estimate of pubertal morphology and generates a draft report with a conclusion. Criteria and limitations are explicit; the tool does not diagnose precocious puberty or assign a Tanner stage. The interface and report are available in Portuguese and English.'),
     'gfr': (
         'GFR: cálculo da função renal', 'GFR: kidney function calculator',
         'Estima a taxa de filtração glomerular a partir da creatinina e dos dados exigidos pela equação. Reúne CKD-EPI 2021, CKiD U25 e Schwartz, com escolha do método conforme a faixa etária. As referências e limitações de cada estimativa estão disponíveis no aplicativo.',
