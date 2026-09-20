@@ -23,7 +23,7 @@ O gerador mantém páginas completas em português e inglês, metadados, URLs ca
 
 ## Conteúdo e identidade
 
-As duas imagens de marca foram fornecidas pelo proprietário e são preservadas integralmente. Os ícones e descrições dos cinco aplicativos são os da homepage pessoal; os aplicativos continuam hospedados nos destinos originais. Não foram copiadas calculadoras nem declaradas versões nas lojas.
+As duas imagens de marca foram fornecidas pelo proprietário e são preservadas integralmente. Os ícones e descrições dos seis aplicativos são os da homepage pessoal; os aplicativos continuam hospedados nos destinos originais. Não foram copiadas calculadoras nem declaradas versões nas lojas.
 
 As fontes Inter e Playfair Display são servidas localmente; licenças em `assets/fonts`. A publicação do código não concede autorização de uso da marca ou de materiais de terceiros.
 
@@ -51,7 +51,7 @@ As configurações da Cloudflare e o Search Console são externos ao repositóri
 
 Revisão de busca em 18/09/2026: a inspeção individual no Search Console confirmou que a homepage em português está indexada; o relatório agregado de indexação ainda estava em processamento. O sitemap estava processado, com 12 páginas encontradas. Isso não equivale a 12 páginas indexadas nem comprova posicionamento ou tráfego orgânico.
 
-A homepage descreve a finalidade dos cinco aplicativos em português e inglês, com links para suas páginas originais. As páginas institucionais têm metadescrições específicas e `BreadcrumbList`. A página 404 permanece `noindex` e não declara traduções da homepage. Atualize `PAGE_MODIFIED` no gerador quando o conteúdo da página correspondente mudar; não atualize datas apenas por executar o build.
+A homepage descreve a finalidade dos seis aplicativos em português e inglês, com links para suas páginas originais. As páginas institucionais têm metadescrições específicas e `BreadcrumbList`. A página 404 permanece `noindex` e não declara traduções da homepage. Atualize `PAGE_MODIFIED` no gerador quando o conteúdo da página correspondente mudar; não atualize datas apenas por executar o build.
 
 O cache da Cloudflare permite HTML das 12 páginas públicas sem parâmetros, cookies ou Authorization, respeitando o prazo da origem (600 segundos). CSS e JavaScript com `?v=` têm cache de um mês: manter os hashes atualizados é obrigatório. Após publicação, confira também as URLs sem parâmetros; um `?deploy=` verifica a origem, mas não comprova que o HTML comum saiu do cache.
 
