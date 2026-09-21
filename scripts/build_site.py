@@ -9,7 +9,7 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://radapps.app'
 DATE = '2026-09-17'
-PAGE_MODIFIED = {'home': '2026-09-20'}
+PAGE_MODIFIED = {'home': '2026-09-21'}
 EMAIL = 'admin@alvaro-menezes.com'
 PAGES = {
     'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
@@ -20,6 +20,7 @@ PAGES = {
     'accessibility': ('acessibilidade/', 'accessibility/', 'Acessibilidade', 'Accessibility'),
 }
 APPS = [
+    ('periprocedimento','HemoRad','Risco hemorrágico em radiologia intervencionista · Revisão clínica (PT/EN)','Bleeding risk in interventional radiology · For clinical review (PT/EN)'),
     ('puberty','Puberty Calc','US pélvica pediátrica: maturação puberal e laudo (PT/EN)','Pediatric pelvic ultrasound: pubertal maturation and report (PT/EN)'),
     ('gfr','GFR','Filtração glomerular: CKD-EPI, CKiD U25 e Schwartz','Glomerular filtration: CKD-EPI, CKiD U25 and Schwartz'),
     ('tirads','TI-RADS','Calcula o TI-RADS na Ultrassonografia da Tireoide','Calculates TI-RADS on thyroid ultrasound'),
@@ -28,6 +29,10 @@ APPS = [
     ('nlung','N-Lung Calc','Recomendações Fleischner e Lung-RADS','Fleischner and Lung-RADS recommendations'),
 ]
 APP_GUIDES = {
+    'periprocedimento': (
+        'HemoRad: avaliação hemorrágica periprocedimento', 'HemoRad: periprocedural bleeding assessment',
+        'Organiza procedimento, órgão-alvo, história hemorrágica, medicamentos e exames em um roteiro de avaliação para radiologia intervencionista. Apresenta a categoria basal do procedimento, pendências e conduta sugerida, com fontes e complementos opcionais. Protótipo para revisão profissional, sem validação assistencial: não estima probabilidade individual de sangramento nem constitui liberação do procedimento.',
+        'Organises the procedure, target organ, bleeding history, medications and laboratory results into an assessment pathway for interventional radiology. Shows baseline procedural risk, missing information and suggested action, with sources and optional complements. Prototype for professional review, without clinical validation: it does not estimate an individual bleeding probability or clear the procedure.'),
     'puberty': (
         'Puberty Calc: ultrassonografia pélvica pediátrica', 'Puberty Calc: pediatric pelvic ultrasound',
         'Integra idade, história de menarca e medidas da pelve feminina por via transabdominal. Calcula volumes e relação fundo/colo, apresenta uma estimativa descritiva do padrão puberal e gera uma minuta de laudo com conclusão. Os critérios e limites são explicitados; a ferramenta não confirma puberdade precoce nem atribui estágio de Tanner.',
