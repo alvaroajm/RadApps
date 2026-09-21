@@ -36,7 +36,7 @@ for path in ROOT.rglob('*.html'):
     p=Check(path.relative_to(ROOT)); p.feed(path.read_text()); parsed[path]=p
     if p.stack: errors.append(f'{p.path}: unclosed {p.stack}')
     if p.h1!=1: errors.append(f'{p.path}: {p.h1} h1 elements')
-expected=[f'https://alvaro-menezes.com/apps/{slug}.html' for slug in ('periprocedimento','puberty','gfr','tirads','hepfe','orads','nlung')]
+expected=[f'https://alvaro-menezes.com/apps/{slug}.html' for slug in ('hemorad','puberty','gfr','tirads','hepfe','orads','nlung')]
 for path,p in parsed.items():
     if path in (ROOT/'index.html',ROOT/'en/index.html') and p.apps!=expected: errors.append(f'{p.path}: app catalogue mismatch')
     for ref in p.refs:

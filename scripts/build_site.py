@@ -67,6 +67,9 @@ LEGAL_DESCRIPTIONS = {
 }
 def asset(path):
     return '/assets/' + path + '?v=' + sha256((ROOT/'assets'/path).read_bytes()).hexdigest()[:12]
+def app_url(slug):
+    page = 'hemorad' if slug == 'periprocedimento' else slug
+    return f'https://alvaro-menezes.com/apps/{page}.html'
 def url(page, lang):
     return ('/en/' if lang else '/') + PAGES[page][lang]
 def title(page, lang):
@@ -113,7 +116,7 @@ def shell(page, lang, content, description=None, not_found=False):
             'numberOfItems':len(APPS), 'itemListElement':[
                 {'@type':'ListItem', 'position':i, 'item':{'@type':'WebPage',
                  'name':name, 'description':en if lang else pt,
-                 'url':f'https://alvaro-menezes.com/apps/{slug}.html'}}
+                 'url':app_url(slug)}}
                 for i,(slug,name,pt,en) in enumerate(APPS,1)]})
     elif not not_found:
         schema['@graph'][-1]['breadcrumb'] = {'@id':page_url+'#breadcrumb'}
@@ -151,11 +154,11 @@ def shell(page, lang, content, description=None, not_found=False):
 
 def homepage(lang):
     t = lambda pt,en: en if lang else pt
-    apps = ''.join(f'''<a class="app-tile" href="https://alvaro-menezes.com/apps/{slug}.html" target="_blank" rel="noopener noreferrer"><span class="app-icon"><img src="{asset(f'apps/{slug}-icon.jpg')}" alt="{escape(name)}" width="88" height="88" loading="lazy"></span><span class="app-name">{escape(name)}</span><span class="app-desc">{escape(en if lang else pt)}</span></a>''' for slug,name,pt,en in APPS)
+    apps = ''.join(f'''<a class="app-tile" href="{app_url(slug)}" target="_blank" rel="noopener noreferrer"><span class="app-icon"><img src="{asset(f'apps/{slug}-icon.jpg')}" alt="{escape(name)}" width="88" height="88" loading="lazy"></span><span class="app-name">{escape(name)}</span><span class="app-desc">{escape(en if lang else pt)}</span></a>''' for slug,name,pt,en in APPS)
     guides = ''.join(
         f'<article class="app-guide"><h3>{escape(APP_GUIDES[slug][lang])}</h3>'
         f'<p>{escape(APP_GUIDES[slug][lang+2])}</p>'
-        f'<a class="text-link" href="https://alvaro-menezes.com/apps/{slug}.html" target="_blank" rel="noopener noreferrer">'
+        f'<a class="text-link" href="{app_url(slug)}" target="_blank" rel="noopener noreferrer">'
         f'{t("Abrir", "Open")} {escape(name)} <span aria-hidden="true">↗</span></a></article>'
         for slug,name,pt,en in APPS)
     pillars = [
