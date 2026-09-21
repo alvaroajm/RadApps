@@ -20,6 +20,7 @@ PAGES = {
     'accessibility': ('acessibilidade/', 'accessibility/', 'Acessibilidade', 'Accessibility'),
 }
 APPS = [
+    ('aspects','ASPECTS','AVC isquêmico: ASPECTS, DWI-ASPECTS e pc-ASPECTS (PT/EN)','Ischemic stroke: ASPECTS, DWI-ASPECTS and pc-ASPECTS (PT/EN)'),
     ('periprocedimento','HemoRad','Risco hemorrágico em radiologia intervencionista · Revisão clínica (PT/EN)','Bleeding risk in interventional radiology · For clinical review (PT/EN)'),
     ('puberty','Puberty Calc','US pélvica pediátrica: maturação puberal e laudo (PT/EN)','Pediatric pelvic ultrasound: pubertal maturation and report (PT/EN)'),
     ('gfr','GFR','Filtração glomerular: CKD-EPI, CKiD U25 e Schwartz','Glomerular filtration: CKD-EPI, CKiD U25 and Schwartz'),
@@ -29,6 +30,10 @@ APPS = [
     ('nlung','N-Lung Calc','Recomendações Fleischner e Lung-RADS','Fleischner and Lung-RADS recommendations'),
 ]
 APP_GUIDES = {
+    'aspects': (
+        'ASPECTS: avaliação regional do AVC isquêmico', 'ASPECTS: regional ischemic stroke assessment',
+        'Reúne ASPECTS na TC sem contraste, DWI-ASPECTS e pc-ASPECTS em módulos separados. O atlas interativo de TC, T1 e DWI acompanha a classificação manual das regiões e mostra os pontos descontados. Inclui exemplos didáticos, estados indeterminados, referências e texto para RIS/PACS em português e inglês, com uso móvel e offline. Os contornos são didáticos; o escore não determina isoladamente elegibilidade terapêutica.',
+        'Includes noncontrast CT ASPECTS, DWI-ASPECTS and pc-ASPECTS in separate modules. An interactive CT, T1 and DWI atlas accompanies manual regional assessment and shows deducted points. Includes teaching examples, indeterminate findings, references and Portuguese/English RIS/PACS text, with mobile and offline use. Outlines are educational; the score alone does not determine treatment eligibility.'),
     'periprocedimento': (
         'HemoRad: avaliação hemorrágica periprocedimento', 'HemoRad: periprocedural bleeding assessment',
         'Organiza procedimento, órgão-alvo, história hemorrágica, medicamentos e exames em um roteiro de avaliação para radiologia intervencionista. Apresenta a categoria basal do procedimento, pendências e conduta sugerida, com fontes e complementos opcionais. Protótipo para revisão profissional, sem validação assistencial: não estima probabilidade individual de sangramento nem constitui liberação do procedimento.',
