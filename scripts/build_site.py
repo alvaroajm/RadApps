@@ -5,6 +5,7 @@ from hashlib import sha256
 from html import escape
 from base64 import b64encode
 import json
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://radapps.app'
@@ -23,6 +24,9 @@ gtag('config', 'G-1TKBR87DTZ');
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4633113806110595" crossorigin="anonymous"></script>
 '''
+# CSP: the inline gtag bootstrap is allowed by hash; Google Analytics and AdSense hosts are allow-listed.
+GTAG_INLINE_HASH = b64encode(sha256(re.search(r'<script>(.*?)</script>', HEAD_INTEGRATIONS, re.S).group(1).encode()).digest()).decode()
+GOOGLE_ADS_HOSTS = 'https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google'
 PAGES = {
     'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
     'terms': ('termos/', 'terms/', 'Termos de uso', 'Terms of use'),
@@ -158,7 +162,7 @@ def shell(page, lang, content, description=None, not_found=False):
 <meta name="robots" content="{'noindex, follow' if not_found else 'index, follow, max-image-preview:large'}">
 <meta name="author" content="RadApps · Álvaro Menezes"><meta name="theme-color" content="#0a2540">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-{schema_hash}' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-{schema_hash}' 'sha256-{GTAG_INLINE_HASH}' https://static.cloudflareinsights.com https://*.googletagmanager.com {GOOGLE_ADS_HOSTS} https://*.googleadservices.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com {GOOGLE_ADS_HOSTS} https://csi.gstatic.com; frame-src 'self' {GOOGLE_ADS_HOSTS}; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="canonical" href="{page_url}">
 {alternates}
 <meta property="og:type" content="website"><meta property="og:site_name" content="RadApps"><meta property="og:title" content="{escape(page_title)}"><meta property="og:description" content="{escape(description)}"><meta property="og:url" content="{page_url}"><meta property="og:locale" content="{'en_US' if lang else 'pt_BR'}"><meta property="og:image" content="{DOMAIN}/assets/brand/radapps-banner.jpg"><meta property="og:image:width" content="1792"><meta property="og:image:height" content="1008"><meta property="og:image:alt" content="RadApps — Apps for radiologists. Built for precision."><meta name="twitter:card" content="summary_large_image">
