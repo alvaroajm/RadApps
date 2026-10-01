@@ -9,8 +9,20 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://radapps.app'
 DATE = '2026-09-17'
-PAGE_MODIFIED = {'home': '2026-09-21'}
+PAGE_MODIFIED = {'home': '2026-10-01'}
 EMAIL = 'admin@alvaro-menezes.com'
+# Existing published head integrations, preserved when regenerating pages.
+HEAD_INTEGRATIONS = '''<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1TKBR87DTZ"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1TKBR87DTZ');
+</script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4633113806110595" crossorigin="anonymous"></script>
+'''
 PAGES = {
     'home': ('', '', 'RadApps — Aplicativos e calculadoras para Radiologia', 'RadApps — Radiology Apps and Medical Calculators'),
     'terms': ('termos/', 'terms/', 'Termos de uso', 'Terms of use'),
@@ -21,6 +33,7 @@ PAGES = {
 }
 APPS = [
     ('aspects','ASPECTS','AVC isquêmico: ASPECTS, DWI-ASPECTS e pc-ASPECTS (PT/EN)','Ischemic stroke: ASPECTS, DWI-ASPECTS and pc-ASPECTS (PT/EN)'),
+    ('demenciarm','DemênciaRM','RM e TC encefálicas: escores visuais e laudo estruturado (PT/EN)','Brain MRI and CT: visual scales and structured report (PT/EN)'),
     ('periprocedimento','HemoRad','Risco hemorrágico em radiologia intervencionista · Revisão clínica (PT/EN)','Bleeding risk in interventional radiology · For clinical review (PT/EN)'),
     ('puberty','Puberty Calc','US pélvica pediátrica: maturação puberal e laudo (PT/EN)','Pediatric pelvic ultrasound: pubertal maturation and report (PT/EN)'),
     ('gfr','GFR','Filtração glomerular: CKD-EPI, CKiD U25 e Schwartz','Glomerular filtration: CKD-EPI, CKiD U25 and Schwartz'),
@@ -34,6 +47,10 @@ APP_GUIDES = {
         'ASPECTS: avaliação regional do AVC isquêmico', 'ASPECTS: regional ischemic stroke assessment',
         'Reúne ASPECTS na TC sem contraste, DWI-ASPECTS e pc-ASPECTS em módulos separados. O atlas interativo de TC, T1 e DWI acompanha a classificação manual das regiões e mostra os pontos descontados. Inclui exemplos didáticos, estados indeterminados, referências e texto para RIS/PACS em português e inglês, com uso móvel e offline. Os contornos são didáticos; o escore não determina isoladamente elegibilidade terapêutica.',
         'Includes noncontrast CT ASPECTS, DWI-ASPECTS and pc-ASPECTS in separate modules. An interactive CT, T1 and DWI atlas accompanies manual regional assessment and shows deducted points. Includes teaching examples, indeterminate findings, references and Portuguese/English RIS/PACS text, with mobile and offline use. Outlines are educational; the score alone does not determine treatment eligibility.'),
+    'demenciarm': (
+        'DemênciaRM: avaliação estruturada de RM e TC encefálicas', 'DemênciaRM: structured brain MRI and CT assessment',
+        'Reúne MTA, Fazekas, GCA, Koedam, ARWMC, van Swieten e outros marcadores em uma avaliação estruturada. Inclui exemplos de RM publicados e licenciados, esquemas identificados, critérios por modalidade e laudo editável em português e inglês. Os dados do exame permanecem apenas na sessão aberta; as escalas quantificam achados e não definem isoladamente a etiologia ou o estágio clínico da demência.',
+        'Combines MTA, Fazekas, GCA, Koedam, ARWMC, van Swieten and other markers in a structured assessment. Includes published and licensed MRI examples, labelled diagrams, modality-specific criteria and an editable report in Portuguese and English. Examination data remain only in the open session; the scales quantify findings and do not independently define dementia etiology or clinical stage.'),
     'periprocedimento': (
         'HemoRad: avaliação hemorrágica periprocedimento', 'HemoRad: periprocedural bleeding assessment',
         'Organiza procedimento, órgão-alvo, história hemorrágica, medicamentos e exames em um roteiro de avaliação para radiologia intervencionista. Apresenta a categoria basal do procedimento, pendências e conduta sugerida, com fontes e complementos opcionais. Protótipo para revisão profissional, sem validação assistencial: não estima probabilidade individual de sangramento nem constitui liberação do procedimento.',
@@ -73,6 +90,8 @@ LEGAL_DESCRIPTIONS = {
 def asset(path):
     return '/assets/' + path + '?v=' + sha256((ROOT/'assets'/path).read_bytes()).hexdigest()[:12]
 def app_url(slug):
+    if slug == 'demenciarm':
+        return 'https://alvaro-menezes.com/apps/demenciarm/'
     page = 'hemorad' if slug == 'periprocedimento' else slug
     return f'https://alvaro-menezes.com/apps/{page}.html'
 def url(page, lang):
@@ -148,7 +167,7 @@ def shell(page, lang, content, description=None, not_found=False):
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script src="{asset('theme-init.js')}"></script><link rel="stylesheet" href="{asset('site.css')}">
 <script type="application/ld+json">{schema_text}</script><script src="{asset('site.js')}" defer></script>
-</head><body>
+{HEAD_INTEGRATIONS}</head><body>
 <a class="skip-link" href="#conteudo">{t('Pular para o conteúdo','Skip to content')}</a>
 <header class="site-header"><div class="topbar"><div class="container topbar-inner"><div class="preferences"><nav class="language-switch" aria-label="Idioma / Language"><a href="{url(page,0)}" lang="pt-BR" hreflang="pt-BR" aria-label="Português" aria-current="{str(not lang).lower()}">PT</a><a href="{url(page,1)}" lang="en" hreflang="en" aria-label="English" aria-current="{str(bool(lang)).lower()}">EN</a></nav><button class="theme-toggle" type="button" aria-label="{t('Mudar tema','Change theme')}">{svg('moon')}{svg('sun')}</button></div><span class="topbar-note">{t('RADIOLOGIA, TECNOLOGIA E PRECISÃO','RADIOLOGY, TECHNOLOGY & PRECISION')}</span></div></div>
 <nav class="navbar" aria-label="{t('Navegação principal','Main navigation')}"><div class="container nav-inner"><a class="brand" href="{home}" aria-label="{t('RadApps — início','RadApps — home')}"><img src="/assets/brand/radapps-logo.jpg" width="58" height="58" alt=""><span><span class="brand-name">Rad<span>Apps</span></span><span class="brand-caption">Apps for radiologists</span></span></a><button class="menu-toggle" aria-controls="nav-links" aria-expanded="false" type="button">Menu <span aria-hidden="true">☰</span></button><ul class="nav-links" id="nav-links">{nav}</ul></div></nav></header>
@@ -159,7 +178,7 @@ def shell(page, lang, content, description=None, not_found=False):
 
 def homepage(lang):
     t = lambda pt,en: en if lang else pt
-    apps = ''.join(f'''<a class="app-tile" href="{app_url(slug)}" target="_blank" rel="noopener noreferrer"><span class="app-icon"><img src="{asset(f'apps/{slug}-icon.jpg')}" alt="{escape(name)}" width="88" height="88" loading="lazy"></span><span class="app-name">{escape(name)}</span><span class="app-desc">{escape(en if lang else pt)}</span></a>''' for slug,name,pt,en in APPS)
+    apps = ''.join(f'''<a class="app-tile" href="{app_url(slug)}" target="_blank" rel="noopener noreferrer"><span class="app-icon"><img src="{asset('apps/demenciarm-icon.png' if slug == 'demenciarm' else f'apps/{slug}-icon.jpg')}" alt="{escape(name)}" width="88" height="88" loading="lazy"></span><span class="app-name">{escape(name)}</span><span class="app-desc">{escape(en if lang else pt)}</span></a>''' for slug,name,pt,en in APPS)
     guides = ''.join(
         f'<article class="app-guide"><h3>{escape(APP_GUIDES[slug][lang])}</h3>'
         f'<p>{escape(APP_GUIDES[slug][lang+2])}</p>'
