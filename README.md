@@ -17,7 +17,7 @@ node --check assets/theme-init.js
 python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
-Abra http://127.0.0.1:4173. Não há dependências de build, cadastro, banco de dados, cookies de marketing ou upload de exames.
+Abra http://127.0.0.1:4173. Não há dependências de build, cadastro, banco de dados ou upload de exames.
 
 O gerador mantém páginas completas em português e inglês, metadados, URLs canônicas, hreflang e sitemap. Edite o conteúdo em `scripts/build_site.py` e execute o gerador; evite alterar manualmente os HTML gerados. Os ativos locais são versionados por SHA-256. O tema utiliza apenas `radapps-theme` no localStorage; idioma é mantido na URL.
 
@@ -47,7 +47,7 @@ Validação: 12 páginas públicas com HTTP 200, cabeçalhos e JSON-LD corretos;
 
 Cloudflare Web Analytics está habilitado com injeção automática para `radapps.app` (site `45f70c335f1f498594f25cbf9f16c0ff`). Não adicionar um segundo beacon ao HTML. A CSP permite scripts de `https://static.cloudflareinsights.com` e conexões ao próprio domínio (`/cdn-cgi/rum`), preservando as demais restrições. Privacidade e cookies descrevem a medição nos dois idiomas. O teste local não injeta o beacon: a injeção ocorre no proxy de produção.
 
-Google Analytics (GA4 `G-1TKBR87DTZ`) e Google AdSense (`ca-pub-4633113806110595`) estão em `HEAD_INTEGRATIONS` no gerador. Desde 01/10/2026 a CSP do HTML libera esses serviços: o script inline do gtag entra por hash (`GTAG_INLINE_HASH`, calculado pelo gerador), os hosts do Google entram por lista (`GOOGLE_ADS_HOSTS`, `*.googletagmanager.com`, `*.google-analytics.com`), `frame-src` aceita os iframes de anúncios, `img-src` aceita `https:` e `style-src` aceita `'unsafe-inline'` (o AdSense injeta estilos). Scripts inline continuam bloqueados, exceto os dois com hash. `ads.txt` fica na raiz do repositório. Pendente: as páginas de privacidade e cookies ainda descrevem apenas o Cloudflare Web Analytics e precisam mencionar Google Analytics e AdSense.
+Google Analytics (GA4 `G-1TKBR87DTZ`) e Google AdSense (`ca-pub-4633113806110595`) estão em `HEAD_INTEGRATIONS` no gerador. Desde 01/10/2026 a CSP do HTML libera esses serviços: o script inline do gtag entra por hash (`GTAG_INLINE_HASH`, calculado pelo gerador), os hosts do Google entram por lista (`GOOGLE_ADS_HOSTS`, `*.googletagmanager.com`, `*.google-analytics.com`), `frame-src` aceita os iframes de anúncios, `img-src` aceita `https:` e `style-src` aceita `'unsafe-inline'` (o AdSense injeta estilos). Scripts inline continuam bloqueados, exceto os dois com hash. `ads.txt` fica na raiz do repositório. As páginas de privacidade e cookies (PT/EN) descrevem Google Analytics e AdSense desde 01/10/2026, com links para os controles do Google. Pendente: o site não tem banner de consentimento para cookies de medição e publicidade.
 
 As configurações da Cloudflare e o Search Console são externos ao repositório. Após troca de hospedagem, conferir certificado válido na origem, SSL estrito e redirecionamentos antes de alterar DNS. Não remover o certificado da origem: o proxy o valida. O HSTS exige que HTTPS continue disponível pelo prazo anunciado.
 
