@@ -22,6 +22,7 @@ window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-1TKBR87DTZ');
+gtag('config', 'AW-18463774874');
 </script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4633113806110595" crossorigin="anonymous"></script>
